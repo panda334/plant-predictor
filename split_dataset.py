@@ -29,4 +29,4 @@ for class_name in os.listdir(SOURCE_DIR):
             dst = os.path.join(split_class_dir, img)
             shutil.copy2(src, dst)
 
-print("✅ Dataset split completed successfully!")
+print("Dataset split completed successfully!")

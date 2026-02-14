@@ -5,9 +5,7 @@ from torchvision.models import ResNet50_Weights
 from PIL import Image
 from collections import deque
 
-# -------------------------------
-# إعداد الموديل
-# -------------------------------
+
 MODEL_PATH = "best_model.pth"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -36,15 +34,10 @@ CLASS_NAMES = [
     "Tomato_healthy"
 ]
 
-# -------------------------------
-# سجل آخر 5 صور تم تصنيفها
-# -------------------------------
 if "history" not in st.session_state:
-    st.session_state.history = deque(maxlen=5)  # يحتفظ بآخر 5 صور
+    st.session_state.history = deque(maxlen=5)  
 
-# -------------------------------
-# Streamlit Interface
-# -------------------------------
+
 st.set_page_config(page_title="🌱 Plant Disease Predictor", page_icon="🌿")
 st.title("🌱 Plant Disease Predictor")
 st.write("Upload a plant image and the model will predict its class!")
@@ -55,7 +48,6 @@ if uploaded_file is not None:
     img = Image.open(uploaded_file).convert("RGB")
     st.image(img, caption="Uploaded Image", width=400)
 
-    # التحويل إلى Tensor
     transform = transforms.Compose([
         transforms.Resize((224,224)),
         transforms.ToTensor(),
@@ -64,7 +56,6 @@ if uploaded_file is not None:
 
     img_tensor = transform(img).unsqueeze(0).to(device)
 
-    # التنبؤ
     with torch.no_grad():
         outputs = model(img_tensor)
         _, pred = torch.max(outputs, 1)
@@ -72,12 +63,9 @@ if uploaded_file is not None:
 
     st.success(f"Predicted Class: **{prediction}**")
 
-    # إضافة الصورة والنتيجة إلى سجل
     st.session_state.history.appendleft((img, prediction))
 
-# -------------------------------
-# عرض سجل آخر 5 صور
-# -------------------------------
+
 if st.session_state.history:
     st.write("### 📜 Last 5 Predictions")
     for i, (hist_img, hist_pred) in enumerate(st.session_state.history):
